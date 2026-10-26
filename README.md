@@ -34,7 +34,7 @@ The repository also contains the building blocks for containerization, Kubernete
 | Area | What it does |
 | --- | --- |
 | 🖥️ **Operations dashboard** | Displays service and database status, runtime version, environment, release identity, uptime, transaction count, and total transaction amount. |
-| 🔌 **Express API** | Provides health checks and endpoints to create, list, retrieve, and delete transactions. |
+| 🔌 **Express API** | Provides health checks and endpoints to create, list, retrieve, edit, and delete transactions. |
 | 🗄️ **MySQL persistence** | Stores transaction records through a database connection pool. |
 | 📦 **Docker** | Packages the app and static dashboard in a Node.js 20 Alpine image that runs as an unprivileged user. |
 | ☸️ **Helm & Kubernetes** | Includes Deployment, Service, ConfigMap, and CPU-based Horizontal Pod Autoscaler templates. |
@@ -171,7 +171,7 @@ Run the configured Node.js test command:
 npm test
 ```
 
-This invokes Node.js's built-in test runner (`node --test`). Automated test files and coverage should be verified in the working checkout before treating the test suite as a release gate.
+This invokes Node.js's built-in test runner (`node --test`). The transaction API test covers validation and the create, update, list, lookup, and delete lifecycle without requiring a running MySQL server.
 
 ## 🐳 Launch it in Docker
 
