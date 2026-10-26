@@ -96,6 +96,26 @@ app.get('/transaction/:id', async (req, res) => {
     }
 });
 
+app.put('/transaction/:id', async (req, res) => {
+    const id = Number(req.params.id);
+    const amount = Number(req.body.amount);
+    const description = typeof req.body.desc === 'string' ? req.body.desc.trim() : '';
+    if (!Number.isInteger(id) || id < 1) {
+        return res.status(400).json({ message: 'Transaction id must be a positive integer.' });
+    }
+    if (!Number.isFinite(amount) || amount <= 0 || !description || description.length > 255) {
+        return res.status(400).json({ message: 'Provide a positive amount and a description up to 255 characters.' });
+    }
+    try {
+        const existing = await transactionService.findTransactionById(id);
+        if (!existing) return res.status(404).json({ message: 'Transaction not found.' });
+        await transactionService.updateTransactionById(id, amount, description);
+        res.json({ message: 'Transaction updated.' });
+    } catch (error) {
+        res.status(503).json({ message: 'Transaction service is unavailable.' });
+    }
+});
+
 app.delete('/transaction/:id', async (req, res) => {
     const id = Number(req.params.id);
     if (!Number.isInteger(id) || id < 1) {

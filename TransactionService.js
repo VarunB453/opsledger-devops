@@ -3,6 +3,7 @@ const mysql = require('mysql2/promise');
 
 const connection = mysql.createPool({
     host: process.env.DB_HOST || dbcreds.DB_HOST,
+    port: Number(process.env.DB_PORT) || 3306,
     user: process.env.DB_USER || dbcreds.DB_USER,
     password: process.env.DB_PWD || dbcreds.DB_PWD,
     database: process.env.DB_DATABASE || dbcreds.DB_DATABASE,
@@ -37,6 +38,14 @@ async function findTransactionById(id) {
     return rows[0] || null;
 }
 
+async function updateTransactionById(id, amount, description) {
+    const [result] = await connection.execute(
+        'UPDATE transactions SET amount = ?, description = ? WHERE id = ?',
+        [amount, description, id]
+    );
+    return result.affectedRows;
+}
+
 async function deleteAllTransactions() {
     const [result] = await connection.query('DELETE FROM transactions');
     return result.affectedRows;
@@ -55,6 +64,7 @@ module.exports = {
     addTransaction,
     getAllTransactions,
     findTransactionById,
+    updateTransactionById,
     deleteAllTransactions,
     deleteTransactionById
 };

@@ -2,6 +2,7 @@ const rows = document.querySelector('#transaction-rows');
 const toast = document.querySelector('#toast');
 const dialog = document.querySelector('#confirm-dialog');
 let toastTimer;
+let editingTransactionId = null;
 
 function showToast(message, isError = false) {
     toast.textContent = message;
@@ -86,6 +87,13 @@ function renderTransactions(transactions) {
         amount.textContent = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'USD' }).format(transaction.amount);
         const action = document.createElement('td');
         action.className = 'action-cell';
+        const edit = document.createElement('button');
+        edit.className = 'edit-row';
+        edit.type = 'button';
+        edit.title = `Edit transaction ${transaction.id}`;
+        edit.setAttribute('aria-label', `Edit transaction ${transaction.id}`);
+        edit.textContent = 'Edit';
+        edit.addEventListener('click', () => openTransactionEditor(transaction));
         const remove = document.createElement('button');
         remove.className = 'delete-row';
         remove.type = 'button';
@@ -93,7 +101,7 @@ function renderTransactions(transactions) {
         remove.setAttribute('aria-label', `Delete transaction ${transaction.id}`);
         remove.textContent = '×';
         remove.addEventListener('click', () => deleteTransaction(transaction.id));
-        action.append(remove);
+        action.append(edit, remove);
         row.append(description, id, amount, action);
         rows.append(row);
     }
@@ -135,15 +143,27 @@ async function refreshDashboard() {
 document.querySelector('#refresh-button').addEventListener('click', refreshDashboard);
 document.querySelector('#clear-button').addEventListener('click', () => dialog.showModal());
 const transactionDialog = document.querySelector('#transaction-dialog');
-document.querySelector('#add-button').addEventListener('click', () => transactionDialog.showModal());
+const transactionForm = document.querySelector('#transaction-form');
+
+function openTransactionEditor(transaction = null) {
+    editingTransactionId = transaction ? transaction.id : null;
+    transactionForm.elements.amount.value = transaction ? transaction.amount : '';
+    transactionForm.elements.desc.value = transaction ? transaction.description : '';
+    document.querySelector('#transaction-dialog-title').textContent = transaction ? 'Edit transaction' : 'Add transaction';
+    document.querySelector('#save-transaction').textContent = transaction ? 'Update transaction' : 'Save transaction';
+    transactionDialog.showModal();
+}
+
+document.querySelector('#add-button').addEventListener('click', () => openTransactionEditor());
 document.querySelector('#cancel-transaction').addEventListener('click', () => transactionDialog.close());
-document.querySelector('#transaction-form').addEventListener('submit', async (event) => {
+transactionForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     const formData = new FormData(form);
+    const editing = editingTransactionId !== null;
     try {
-        const response = await fetch('/transaction', {
-            method: 'POST',
+        const response = await fetch(editing ? `/transaction/${editingTransactionId}` : '/transaction', {
+            method: editing ? 'PUT' : 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ amount: formData.get('amount'), desc: formData.get('desc') })
         });
@@ -151,7 +171,8 @@ document.querySelector('#transaction-form').addEventListener('submit', async (ev
         if (!response.ok) throw new Error(result.message || 'Could not add transaction');
         transactionDialog.close();
         form.reset();
-        showToast('Transaction added.');
+        editingTransactionId = null;
+        showToast(editing ? 'Transaction updated.' : 'Transaction added.');
         await Promise.all([loadTransactions(), loadStatus()]);
     } catch (error) {
         showToast(error.message, true);

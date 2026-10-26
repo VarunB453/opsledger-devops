@@ -1,0 +1,41 @@
+services:
+  mysql:
+    image: mysql:8.4
+    network_mode: host
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-local-development-only}
+      MYSQL_DATABASE: transactions
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./schema/backend.sql:/docker-entrypoint-initdb.d/001-backend.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  app:
+    build: .
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 3306
+      DB_USER: expense
+      DB_PWD: ExpenseApp@1
+      DB_DATABASE: transactions
+      PORT: ${PORT:-8080}
+      NODE_ENV: development
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "${PORT:-8080}:8080"
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  default:

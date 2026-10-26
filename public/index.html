@@ -71,7 +71,7 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>DESCRIPTION</th><th>RECORD ID</th><th class="amount-column">AMOUNT</th><th></th></tr></thead>
+              <thead><tr><th>DESCRIPTION</th><th>RECORD ID</th><th class="amount-column">AMOUNT</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
               <tbody id="transaction-rows"><tr><td colspan="4" class="empty-state">Loading transactions…</td></tr></tbody>
             </table>
           </div>
@@ -114,12 +114,12 @@
   <dialog id="transaction-dialog" class="confirm-dialog">
     <form id="transaction-form" class="dialog-content">
       <p class="eyebrow">APPLICATION DATA</p>
-      <h2>Add transaction</h2>
+      <h2 id="transaction-dialog-title">Add transaction</h2>
       <label class="form-label" for="amount-input">Amount</label>
       <div class="amount-input-wrap"><span>$</span><input id="amount-input" name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required></div>
       <label class="form-label" for="description-input">Description</label>
       <input class="description-input" id="description-input" name="desc" type="text" maxlength="255" placeholder="What was this transaction for?" required>
-      <div class="dialog-actions"><button class="text-button" id="cancel-transaction" type="button">Cancel</button><button class="submit-button" type="submit">Save transaction</button></div>
+      <div class="dialog-actions"><button class="text-button" id="cancel-transaction" type="button">Cancel</button><button class="submit-button" id="save-transaction" type="submit">Save transaction</button></div>
     </form>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
