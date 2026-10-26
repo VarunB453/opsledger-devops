@@ -8,22 +8,12 @@ A DevOps-minded transaction app that brings an Express API, a live operations da
 
 <br />
 
-<<<<<<< HEAD
 ![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-339933?logo=nodedotjs&logoColor=white)
 ![Express](https://img.shields.io/badge/API-Express-222222?logo=express&logoColor=white)
 ![MySQL](https://img.shields.io/badge/Data-MySQL-4479A1?logo=mysql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Containers-Docker-2496ED?logo=docker&logoColor=white)
 ![Helm](https://img.shields.io/badge/Kubernetes-Helm-0F1689?logo=helm&logoColor=white)
 ![Terraform](https://img.shields.io/badge/Infrastructure-Terraform-844FBA?logo=terraform&logoColor=white)
-=======
-- **Operations dashboard:** Shows API and database status, application version, environment, release identifier, process uptime, transaction count, and the total of recorded transactions.
-- **Transaction management:** Create, list, retrieve, edit, and delete transaction records stored in MySQL.
-- **Health checks:** Separate liveness and database-readiness endpoints for local verification and Kubernetes probes.
-- **Containerization:** A Node.js 20 Alpine-based image that runs the application as an unprivileged user.
-- **Kubernetes packaging:** Helm templates for a Deployment, Service, ConfigMap, and CPU-based Horizontal Pod Autoscaler.
-- **Infrastructure as code:** Terraform files and deployment guidance for AWS networking and application infrastructure. Review the module configuration before applying it.
-- **CI/CD integration point:** A Jenkinsfile that delegates non-main-branch pipeline decisions to an external Jenkins shared library.
->>>>>>> 596854d (Update README.md to enhance transaction management section and add local development instructions; modify styles.css for improved action cell layout and new edit row styles.)
 
 **A hands-on portfolio project for exploring application delivery and operational visibility.**
 
@@ -62,25 +52,11 @@ flowchart TD
     ROUTES --> SVC[Transaction service]
     SVC --> DB[(MySQL database)]
 
-<<<<<<< HEAD
     DOCKER[Docker image] -. packages .-> APP
     HELM[Helm chart] -. deploys to .-> K8S[Kubernetes / EKS]
     K8S --> APP
     TF[Terraform] -. provisions infrastructure for .-> K8S
     JENKINS[Jenkinsfile] -. delegates pipeline decisions to .-> LIB[External shared library]
-=======
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| `GET` | `/health` | Liveness information, including service name, uptime, version, environment, and timestamp. Does not require a database query. |
-| `GET` | `/ready` | Checks MySQL connectivity; returns `503` when the database is unavailable. |
-| `GET` | `/api/status` | Dashboard runtime and database status, including version, release identifier, environment, uptime, and timestamp. |
-| `GET` | `/transaction` | Lists transaction records in descending ID order. The records are returned in a `result` array. |
-| `POST` | `/transaction` | Creates a transaction from `amount` and `desc`. The amount must be positive and the description must be 1–255 characters. |
-| `GET` | `/transaction/:id` | Retrieves one transaction by positive integer ID. |
-| `PUT` | `/transaction/:id` | Updates a transaction from `amount` and `desc`, using the same validation as create. |
-| `DELETE` | `/transaction/:id` | Deletes one transaction by ID. |
-| `DELETE` | `/transaction` | Deletes all transaction records. This is a destructive operation. |
->>>>>>> 596854d (Update README.md to enhance transaction management section and add local development instructions; modify styles.css for improved action cell layout and new edit row styles.)
 
     classDef app fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e;
     classDef data fill:#dcfce7,stroke:#16a34a,color:#14532d;
@@ -94,9 +70,6 @@ flowchart TD
 
 ## 🚀 Get it running locally
 
-<<<<<<< HEAD
-### Prerequisites
-=======
 ### Start the complete local stack
 
 For local development on Linux with Docker Compose, build and start the API and MySQL database together:
@@ -109,8 +82,7 @@ Open [http://localhost:8080](http://localhost:8080). The database is initialized
 
 This Compose configuration is for local development only: it uses a sample database credential and Linux host networking for MySQL. The application has no built-in authentication, so do not expose it or reuse these credentials in a shared or production environment.
 
-### Requirements
->>>>>>> 596854d (Update README.md to enhance transaction management section and add local development instructions; modify styles.css for improved action cell layout and new edit row styles.)
+### Prerequisites
 
 - Node.js 20 or later and npm
 - A reachable MySQL server
@@ -163,6 +135,7 @@ The dashboard can still load when MySQL is unavailable and indicate a degraded d
 | `GET` | `/transaction` | Lists transaction records in descending ID order; records are returned in a `result` array. |
 | `POST` | `/transaction` | Creates a transaction using `amount` and `desc`. Amount must be positive; description must contain 1–255 characters. |
 | `GET` | `/transaction/:id` | Retrieves a transaction by positive integer ID. |
+| `PUT` | `/transaction/:id` | Updates a transaction using `amount` and `desc`, with the same validation as create. |
 | `DELETE` | `/transaction/:id` | Deletes one transaction by ID. |
 | `DELETE` | `/transaction` | Deletes all transaction records. **Destructive operation.** |
 
