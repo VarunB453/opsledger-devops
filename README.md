@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📒 OpsLedger
+# OpsLedger
 
 ### Track transactions. Observe the system. Ship with confidence.
 
