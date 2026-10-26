@@ -104,9 +104,12 @@ td:first-child { overflow: hidden; font-weight: 600; text-overflow: ellipsis; wh
 .amount-column, td.amount { text-align: right; }
 td.amount { color: #303b34; font-weight: 700; white-space: nowrap; }
 td.record-id { color: #929b95; font-family: "DM Mono", monospace; font-size: 9px; }
-td.action-cell { width: 38px; padding-right: 12px; text-align: right; }
+td.action-cell { width: 82px; padding-right: 12px; text-align: right; white-space: nowrap; }
+.edit-row { padding: 4px 6px; border: 0; border-radius: 4px; background: transparent; color: #718078; font-size: 9px; }
+.edit-row:hover { background: #edf3e8; color: #476f46; }
 .delete-row { width: 24px; height: 24px; border: 0; border-radius: 4px; background: transparent; color: #a2aaa4; font-size: 15px; }
 .delete-row:hover { background: #f8e9e6; color: var(--red); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
 .empty-state { height: 120px; color: #919b94; text-align: center; }
 .table-foot { margin: 0; padding: 11px 17px; color: #99a19c; font-size: 9px; }
 .release-panel { padding-bottom: 15px; }
