@@ -6,6 +6,8 @@
 
 A DevOps-minded transaction app that brings an Express API, a live operations dashboard, and MySQL together—with Docker, Helm, Jenkins integration, and Terraform for the journey from laptop to AWS.
 
+
+
 <br />
 
 ![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-339933?logo=nodedotjs&logoColor=white)
@@ -21,6 +23,10 @@ A DevOps-minded transaction app that brings an Express API, a live operations da
 
 ---
 
+
+![OpsLedger dashboard](public/assets/Dashboard.jpeg)
+
+---
 ## 🧭 Welcome to the Ops Room
 
 OpsLedger is a small transaction service with an operations-first mindset. Open the dashboard at `/` to check application and database health, see release details and uptime, and manage transaction records.
