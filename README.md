@@ -1,80 +1,94 @@
-# OpsLedger
+<div align="center">
 
-OpsLedger is a DevOps-focused transaction application built around an Express API, an operations dashboard, and MySQL persistence. The repository also contains a Docker image definition, a Helm chart for Kubernetes, Jenkins pipeline entry-point configuration, and Terraform documentation and infrastructure code for AWS.
+# 📒 OpsLedger
 
+### Track transactions. Observe the system. Ship with confidence.
 
-## Features
+A DevOps-minded transaction app that brings an Express API, a live operations dashboard, and MySQL together—with Docker, Helm, Jenkins integration, and Terraform for the journey from laptop to AWS.
 
-- **Operations dashboard:** Shows API and database status, application version, environment, release identifier, process uptime, transaction count, and the total of recorded transactions.
-- **Transaction API:** Create, list, retrieve, and delete transaction records stored in MySQL.
-- **Health checks:** Separate liveness and database-readiness endpoints for local verification and Kubernetes probes.
-- **Containerization:** A Node.js 20 Alpine-based image that runs the application as an unprivileged user.
-- **Kubernetes packaging:** Helm templates for a Deployment, Service, ConfigMap, and CPU-based Horizontal Pod Autoscaler.
-- **Infrastructure as code:** Terraform files and deployment guidance for AWS networking and application infrastructure. Review the module configuration before applying it.
-- **CI/CD integration point:** A Jenkinsfile that delegates non-main-branch pipeline decisions to an external Jenkins shared library.
+<br />
 
-## Repository layout
+![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-339933?logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/API-Express-222222?logo=express&logoColor=white)
+![MySQL](https://img.shields.io/badge/Data-MySQL-4479A1?logo=mysql&logoColor=white)
+![Docker](https://img.shields.io/badge/Containers-Docker-2496ED?logo=docker&logoColor=white)
+![Helm](https://img.shields.io/badge/Kubernetes-Helm-0F1689?logo=helm&logoColor=white)
+![Terraform](https://img.shields.io/badge/Infrastructure-Terraform-844FBA?logo=terraform&logoColor=white)
 
-| Path | Purpose |
+**A hands-on portfolio project for exploring application delivery and operational visibility.**
+
+</div>
+
+---
+
+## 🧭 Welcome to the Ops Room
+
+OpsLedger is a small transaction service with an operations-first mindset. Open the dashboard at `/` to check application and database health, see release details and uptime, and manage transaction records.
+
+The repository also contains the building blocks for containerization, Kubernetes packaging, and AWS infrastructure. Some delivery components depend on external tools and configuration; this README marks those boundaries instead of pretending everything is turnkey.
+
+> **Project status:** Portfolio / learning project. Authentication and authorization are not implemented. Review the security and environment-specific settings before exposing the app to a network or provisioning cloud infrastructure.
+
+## ✨ What’s inside?
+
+| Area | What it does |
 | --- | --- |
-| `index.js` | Express application, static dashboard hosting, health endpoints, and transaction routes |
-| `TransactionService.js` | MySQL connection pool and transaction queries |
-| `DbConfig.js` | Default database configuration values; environment variables take precedence |
-| `public/` | Dashboard HTML, CSS, and client-side JavaScript |
-| `schema/backend.sql` | Database, table, and sample application-user creation script |
-| `Dockerfile` | Container image build definition |
-| `helm/` | Kubernetes Helm chart and templates |
-| `terraform/` | AWS infrastructure code and [`terraform/README.md`](terraform/README.md) deployment guide |
-| `Jenkinsfile` | Jenkins shared-library integration point |
-| `sonar-project.properties` | SonarQube project metadata |
-| `package.json`, `package-lock.json` | Node.js dependencies and npm scripts |
+| 🖥️ **Operations dashboard** | Displays service and database status, runtime version, environment, release identity, uptime, transaction count, and total transaction amount. |
+| 🔌 **Express API** | Provides health checks and endpoints to create, list, retrieve, and delete transactions. |
+| 🗄️ **MySQL persistence** | Stores transaction records through a database connection pool. |
+| 📦 **Docker** | Packages the app and static dashboard in a Node.js 20 Alpine image that runs as an unprivileged user. |
+| ☸️ **Helm & Kubernetes** | Includes Deployment, Service, ConfigMap, and CPU-based Horizontal Pod Autoscaler templates. |
+| 🏗️ **Terraform & AWS** | Includes infrastructure code and guidance for networking, security groups, bastion access, database, EKS, certificates, ingress, and ECR. |
+| 🛠️ **Jenkins integration** | Provides a pipeline entry point that relies on an external Jenkins shared library for non-`main` branch decisions. |
 
-## Application and API
+## 🗺️ How the pieces connect
 
-The dashboard is served by Express at `/`. It remains available when MySQL is unavailable, but database-backed operations will fail until the database connection is restored.
+```mermaid
+flowchart TD
+    U[Browser / API client] --> APP[Express application]
+    APP --> UI[Static operations dashboard]
+    APP --> HEALTH[Health and status endpoints]
+    APP --> ROUTES[Transaction endpoints]
+    ROUTES --> SVC[Transaction service]
+    SVC --> DB[(MySQL database)]
 
-| Method | Endpoint | Purpose |
-| --- | --- | --- |
-| `GET` | `/health` | Liveness information, including service name, uptime, version, environment, and timestamp. Does not require a database query. |
-| `GET` | `/ready` | Checks MySQL connectivity; returns `503` when the database is unavailable. |
-| `GET` | `/api/status` | Dashboard runtime and database status, including version, release identifier, environment, uptime, and timestamp. |
-| `GET` | `/transaction` | Lists transaction records in descending ID order. The records are returned in a `result` array. |
-| `POST` | `/transaction` | Creates a transaction from `amount` and `desc`. The amount must be positive and the description must be 1–255 characters. |
-| `GET` | `/transaction/:id` | Retrieves one transaction by positive integer ID. |
-| `DELETE` | `/transaction/:id` | Deletes one transaction by ID. |
-| `DELETE` | `/transaction` | Deletes all transaction records. This is a destructive operation. |
+    DOCKER[Docker image] -. packages .-> APP
+    HELM[Helm chart] -. deploys to .-> K8S[Kubernetes / EKS]
+    K8S --> APP
+    TF[Terraform] -. provisions infrastructure for .-> K8S
+    JENKINS[Jenkinsfile] -. delegates pipeline decisions to .-> LIB[External shared library]
 
-Example request to create a transaction:
-
-```bash
-curl -X POST http://localhost:8080/transaction \
-  -H 'Content-Type: application/json' \
-  -d '{"amount":12.50,"desc":"Local test transaction"}'
+    classDef app fill:#e0f2fe,stroke:#0284c7,color:#0c4a6e;
+    classDef data fill:#dcfce7,stroke:#16a34a,color:#14532d;
+    classDef ops fill:#f3e8ff,stroke:#9333ea,color:#581c87;
+    class APP,UI,HEALTH,ROUTES,SVC app;
+    class DB data;
+    class DOCKER,HELM,K8S,TF,JENKINS,LIB ops;
 ```
 
-The request field is named `desc`; records returned by the API use the database column name `description`.
+*The infrastructure and CI/CD resources are configuration and integration points; successful deployment depends on configuring the target environment and external services.*
 
-## Run locally
+## 🚀 Get it running locally
 
-### Requirements
+### Prerequisites
 
 - Node.js 20 or later and npm
-- A running MySQL server
-- A MySQL account with permissions to create or access the `transactions` database and table
+- A reachable MySQL server
+- A MySQL account that can access the `transactions` database and table
 
 ### 1. Prepare the database
 
-Review [`schema/backend.sql`](schema/backend.sql) before executing it. The script creates the `transactions` database and table, and it includes a sample application account and password intended for local development. Replace that sample credential before use. If the account already exists in MySQL, update its password explicitly; `CREATE USER IF NOT EXISTS` does not reset an existing account's password.
-
-After updating the schema and account credentials, run:
+Review [`schema/backend.sql`](schema/backend.sql) before running it. It creates the `transactions` database and table and includes a sample application account for local development. Replace the sample credential before use, and do not reuse it in a shared or production environment.
 
 ```bash
 mysql -u root -p < schema/backend.sql
 ```
 
-### 2. Install dependencies and start the API
+If the MySQL account already exists, update its password explicitly: `CREATE USER IF NOT EXISTS` does not reset the password of an existing account.
 
-Set `DB_PWD` to the password configured for the local application database account:
+### 2. Install and start OpsLedger
+
+Set `DB_PWD` to the password configured for your local database user:
 
 ```bash
 npm ci
@@ -87,7 +101,9 @@ PORT=8080 \
 npm start
 ```
 
-Open [http://localhost:8080](http://localhost:8080) to view the dashboard. Verify the service with:
+Open **[http://localhost:8080](http://localhost:8080)** and enter the Ops Room.
+
+Check the service endpoints:
 
 ```bash
 curl -i http://localhost:8080/health
@@ -95,33 +111,56 @@ curl -i http://localhost:8080/ready
 curl -i http://localhost:8080/api/status
 ```
 
-The dashboard can display a degraded state when MySQL is unavailable. Transaction list, create, lookup, and delete operations require a working database connection.
+The dashboard can still load when MySQL is unavailable and indicate a degraded database state. Database-backed transaction operations require a working database connection.
 
-### Configuration reference
+## 🛰️ API field guide
 
-| Variable | Purpose | Default or behavior |
+| Method | Endpoint | Purpose |
 | --- | --- | --- |
-| `PORT` | HTTP listen port | `8080` |
-| `DB_HOST` | MySQL hostname or address | Must identify a reachable database; the Docker image declares `mysql` as its default host. |
-| `DB_USER` | MySQL username | `expense` in `DbConfig.js`, unless overridden by the environment |
-| `DB_PWD` | MySQL password | Supply through the environment or a secrets manager; do not commit real credentials. |
-| `DB_DATABASE` | Database name | `transactions` in `DbConfig.js`, unless overridden by the environment |
-| `APP_VERSION` | Application version displayed in status information | Falls back to the version in `package.json` (`1.5.0` in the reviewed repository) |
-| `GIT_COMMIT` | Release identifier displayed by the dashboard | Takes precedence over `BUILD_NUMBER`; falls back to `local` if neither is set |
-| `BUILD_NUMBER` | Fallback release identifier | Used when `GIT_COMMIT` is not set |
-| `NODE_ENV` | Runtime environment label | `development` when unset |
+| `GET` | `/health` | Liveness information, including service name, uptime, version, environment, and timestamp; does not require a database query. |
+| `GET` | `/ready` | Checks MySQL connectivity; returns `503` when the database is unavailable. |
+| `GET` | `/api/status` | Returns dashboard runtime information and database status. |
+| `GET` | `/transaction` | Lists transaction records in descending ID order; records are returned in a `result` array. |
+| `POST` | `/transaction` | Creates a transaction using `amount` and `desc`. Amount must be positive; description must contain 1–255 characters. |
+| `GET` | `/transaction/:id` | Retrieves a transaction by positive integer ID. |
+| `DELETE` | `/transaction/:id` | Deletes one transaction by ID. |
+| `DELETE` | `/transaction` | Deletes all transaction records. **Destructive operation.** |
 
-## Tests
+### Try a transaction
 
-Run the configured test command with:
+```bash
+curl -X POST http://localhost:8080/transaction \
+  -H 'Content-Type: application/json' \
+  -d '{"amount":12.50,"desc":"First OpsLedger test"}'
+```
+
+The create request uses `desc`; records returned by the API use the database column name `description`.
+
+## ⚙️ Configuration dashboard
+
+| Variable | Purpose | Behavior |
+| --- | --- | --- |
+| `PORT` | HTTP listen port | Defaults to `8080`. |
+| `DB_HOST` | MySQL hostname or address | Must resolve to a reachable database. The Docker image declares `mysql` as its default host. |
+| `DB_USER` | MySQL username | Defaults to `expense` in `DbConfig.js`, unless overridden. |
+| `DB_PWD` | MySQL password | Supply at runtime or through a secrets manager; do not commit real credentials. |
+| `DB_DATABASE` | Database name | Defaults to `transactions` in `DbConfig.js`, unless overridden. |
+| `APP_VERSION` | Application version shown in status details | Falls back to the version in `package.json` (`1.5.0` in the reviewed repository). |
+| `GIT_COMMIT` | Release identifier | Takes precedence over `BUILD_NUMBER`; falls back to `local` if neither is set. |
+| `BUILD_NUMBER` | Fallback release identifier | Used when `GIT_COMMIT` is not set. |
+| `NODE_ENV` | Runtime environment label | Defaults to `development`. |
+
+## 🧪 Tests
+
+Run the configured Node.js test command:
 
 ```bash
 npm test
 ```
 
-The script invokes Node.js's built-in test runner (`node --test`). Test files were not visible in the public repository file listing reviewed for this README, so the presence and coverage of an automated test suite should be verified in the working checkout.
+This invokes Node.js's built-in test runner (`node --test`). Automated test files and coverage should be verified in the working checkout before treating the test suite as a release gate.
 
-## Run with Docker
+## 🐳 Launch it in Docker
 
 Build the image:
 
@@ -129,7 +168,7 @@ Build the image:
 docker build -t opsledger:local .
 ```
 
-Start the container and connect it to a MySQL instance running on the host:
+Run it with a MySQL instance accessible from the container:
 
 ```bash
 docker run --rm -p 8080:8080 \
@@ -140,21 +179,23 @@ docker run --rm -p 8080:8080 \
   opsledger:local
 ```
 
-The example assumes `host.docker.internal` resolves to the host from inside Docker, as it does by default in Docker Desktop. On Linux, you may need `--add-host=host.docker.internal:host-gateway`, or use a Docker network and address the database container by its service/container name. The image does **not** include a MySQL server; database configuration must be provided at runtime. The Dockerfile runs Node.js as an unprivileged user and copies the static dashboard into the image.
+The example assumes `host.docker.internal` resolves to the host from inside Docker, as it normally does in Docker Desktop. On Linux, you may need `--add-host=host.docker.internal:host-gateway`, or use a Docker network and connect to the database container by its service/container name.
 
-## Kubernetes with Helm
+**Heads-up:** The image packages the application, not a MySQL server. Provide database connectivity and credentials at runtime; never bake secrets into the image.
 
-The chart is located in [`helm/`](helm/). Its templates define a backend Deployment and Service, a ConfigMap, and a Horizontal Pod Autoscaler. The Deployment configures `/health` as its liveness probe and `/ready` as its readiness probe, with CPU and memory requests/limits. The HPA targets 70% average CPU utilization and is configured for 1–10 replicas.
+## ☸️ Take it to Kubernetes with Helm
 
-Before installing the chart, review and update the environment-specific values in the chart:
+The chart lives in [`helm/`](helm/) and includes a backend Deployment and Service, a ConfigMap, and a CPU-based Horizontal Pod Autoscaler. The Deployment configures `/health` for liveness and `/ready` for readiness, sets resource requests and limits, and the HPA targets 70% average CPU utilization across a configured range of 1–10 replicas.
 
-1. **Container image:** `helm/templates/deployment.yaml` hard-codes an ECR image repository. Replace it with the repository that contains your image. Set the image tag through `deployment.imageVersion` in `helm/values.yaml` or the Helm command line.
-2. **Database host:** `helm/templates/configmap.yaml` contains a preconfigured `DB_HOST`. Replace it with the endpoint reachable from the Kubernetes cluster.
-3. **Database credentials:** The Deployment imports a Secret named `backend` in the `expense` namespace. Create that Secret in the target cluster; do not store real credentials in the chart or repository.
-4. **Namespace:** The templates explicitly use the `expense` namespace. Keep the namespace consistent across the release and its Secret.
-5. **Cluster prerequisites:** Ensure the cluster can pull from the selected image registry and has metrics support configured for the HPA.
+Before installing, review these environment-specific values:
 
-Example commands, after updating the image repository and database host:
+1. **Image repository:** `helm/templates/deployment.yaml` currently hard-codes an ECR image repository. Replace it with your registry path.
+2. **Image tag:** Set `deployment.imageVersion` in `helm/values.yaml` or with Helm's `--set` option.
+3. **Database host:** Update the `DB_HOST` value in `helm/templates/configmap.yaml` to the endpoint reachable from the cluster.
+4. **Credentials:** The Deployment expects a Secret named `backend` in the `expense` namespace. Create it outside source control.
+5. **Cluster readiness:** Ensure the cluster can pull the image and has metrics support available for the HPA.
+
+Example, after updating the chart for your environment and pushing the image:
 
 ```bash
 kubectl create namespace expense --dry-run=client -o yaml | kubectl apply -f -
@@ -169,30 +210,54 @@ helm upgrade --install backend ./helm \
   --set deployment.imageVersion=1.5.0
 ```
 
-Use the actual image tag that you have pushed to the configured registry rather than assuming `1.5.0` is available. The commands above create a Secret only once; update or recreate it using your cluster's normal secret-management process if it already exists. Confirm that the database host value and account permissions match your MySQL deployment.
+Use the tag you actually pushed to the registry. The Secret command above creates the Secret if it does not exist; handle updates according to your cluster's secret-management process. Confirm that the database account, host, and permissions match the target environment.
 
-## AWS infrastructure with Terraform
+## ☁️ AWS infrastructure with Terraform
 
-The [`terraform/README.md`](terraform/README.md) describes a staged AWS setup covering networking, security groups, a bastion host, MySQL/RDS, EKS, certificates, ALB ingress, and ECR. Read that guide and review each module's variables, provider configuration, dependencies, and state configuration before running Terraform.
+The [`terraform/README.md`](terraform/README.md) describes a staged AWS setup that includes networking, security groups, a bastion, a database, EKS, certificates, ingress, and ECR.
 
-The checked-in configuration includes environment-specific assumptions, including a local Windows public-key path in the EKS configuration. Review that path along with region/account values, image registry references, network identifiers, database endpoints, cluster settings, and access policies. Replace them with values appropriate to your own environment and use a secure remote state backend before collaborating or managing shared infrastructure.
+Before provisioning, inspect provider configuration, variables, dependencies, network identifiers, region/account assumptions, access policies, database endpoints, and state configuration. The checked-in EKS configuration includes a machine-specific Windows public-key path; replace it with a valid path for your environment. For collaborative infrastructure work, configure an appropriate secure remote state backend.
 
-Terraform provisioning is separate from running the Node.js application and can create billable AWS resources. Start with `terraform plan` in the relevant module directory and inspect the proposed changes before applying them.
+Terraform provisioning is separate from running the application and may create billable AWS resources. Review the plan in the relevant module directory before applying changes.
 
-## CI/CD integration
+## 🔄 CI/CD: what is wired in?
 
-The root [`Jenkinsfile`](Jenkinsfile) references a Jenkins shared library named `jenkins-shared-library`. For non-`main` branches, it calls `pipelineDecission.decidePipeline(configMap)` with configuration identifying the Node.js EKS backend project. The `main` branch currently only logs a message in this file; it does not define the full build-and-deploy stages itself.
+The root [`Jenkinsfile`](Jenkinsfile) references an external Jenkins shared library named `jenkins-shared-library`. Non-`main` branches delegate pipeline decisions to that library. The current `main` branch path only logs a message; this repository does not contain the complete build-and-deploy pipeline implementation.
 
-The shared library, Jenkins credentials, required plugins, and any external quality or artifact services must be configured separately in Jenkins. `sonar-project.properties` supplies SonarQube project metadata, but the repository does not by itself configure a SonarQube server, Nexus, Prometheus, or Grafana. Set `APP_VERSION` and `GIT_COMMIT` in the delivery pipeline so the running dashboard can identify the deployed release.
+The shared library, Jenkins credentials, plugins, and external services must be configured in Jenkins separately. `sonar-project.properties` provides SonarQube project metadata, but the repository does not itself configure SonarQube, Nexus, Prometheus, or Grafana. Set `APP_VERSION` and `GIT_COMMIT` in the pipeline to display useful release identity in the dashboard.
 
-## Security and deployment notes
+## 🔐 Before going beyond local development
 
-- **No built-in authentication or authorization:** The transaction endpoints, including `DELETE /transaction`, should not be exposed to an untrusted network without an appropriate access-control layer.
-- **CORS is permissive:** The Express application enables CORS without an origin allowlist. Configure a restrictive policy for deployments that are not local demonstrations.
-- **Sample database credential:** Replace the credential embedded in `schema/backend.sql`; never reuse sample credentials in shared or production environments.
-- **Do not commit secrets:** Keep database passwords and cloud credentials in environment variables or the platform's secret manager. The Kubernetes `backend` Secret should be created outside source control.
-- **Review infrastructure defaults:** The Helm image path, ConfigMap database host, Terraform key path, and AWS-specific settings are environment-dependent and must be reviewed before deployment.
+- **Add access control.** Authentication and authorization are not implemented. Transaction endpoints—including `DELETE /transaction`—must not be exposed to untrusted users without an appropriate access-control layer.
+- **Restrict CORS.** The Express app currently enables CORS without an origin allowlist. Configure a policy appropriate to your deployment.
+- **Replace sample credentials.** Update the example database account in `schema/backend.sql`; never reuse its sample password in shared environments.
+- **Keep secrets out of Git.** Use runtime environment variables or a secret manager for passwords and cloud credentials.
+- **Review deployment defaults.** Update the Helm image path and database host, Terraform key path, and AWS-specific values before deploying.
 
-## Project status
+## 🧰 Repository map
 
-OpsLedger demonstrates the integration of a small full-stack service with containerization, Kubernetes packaging, Jenkins integration, and infrastructure-as-code concepts. It should be treated as a development/portfolio project until access control, environment-specific configuration, automated test coverage, and production deployment requirements have been addressed.
+| Path | Purpose |
+| --- | --- |
+| `index.js` | Express application, static dashboard hosting, health endpoints, and transaction routes |
+| `TransactionService.js` | MySQL connection pool and transaction queries |
+| `DbConfig.js` | Default database configuration values; environment variables take precedence |
+| `public/` | Dashboard HTML, CSS, and client-side JavaScript |
+| `schema/backend.sql` | Database, table, and sample application-user creation script |
+| `Dockerfile` | Container image build definition |
+| `helm/` | Kubernetes Helm chart and templates |
+| `terraform/` | AWS infrastructure code and deployment guide |
+| `Jenkinsfile` | Jenkins shared-library integration point |
+| `sonar-project.properties` | SonarQube project metadata |
+| `package.json`, `package-lock.json` | Node.js dependencies and npm scripts |
+
+## 🎯 The mission
+
+OpsLedger brings application development and DevOps practices into one place: build a service, observe its health, package it, describe its infrastructure, and connect it to a delivery pipeline. It is a foundation for experimentation—not a claim that every cloud resource or external integration is ready out of the box.
+
+**Build thoughtfully. Ship safely. Keep the system observable.**
+
+<div align="center">
+
+Made for learning, building, and improving one deployment at a time.
+
+</div>
