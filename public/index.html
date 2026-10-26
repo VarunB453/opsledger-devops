@@ -3,9 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#171b1b">
+  <meta name="theme-color" content="#161c1a">
   <meta name="description" content="OpsLedger application and deployment health console">
   <title>OpsLedger | Operations</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23c7f36b'/%3E%3Ctext x='16' y='23' font-family='Arial,sans-serif' font-size='20' font-weight='800' text-anchor='middle' fill='%23161c1a'%3EO%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,115 +14,224 @@
   <script src="/app.js" defer></script>
 </head>
 <body>
+  <!-- Icon sprite: one consistent stroke set instead of mixed unicode glyphs -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-overview" viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></symbol>
+      <symbol id="i-transactions" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3z"/><path d="M9.5 8h5M9.5 12h5"/></symbol>
+      <symbol id="i-delivery" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20.5 12a8.5 8.5 0 1 1-2.6-6.1L20.5 8.5"/><path d="M20.5 3.5v5h-5"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+      <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16.2 9.6"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M5.5 12.5l4.2 4.2L18.5 8"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.2l9.5 16.6H2.5L12 3.2z"/><path d="M12 10v4.5M12 17.6h.01"/></symbol>
+      <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+      <symbol id="i-server" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></symbol>
+      <symbol id="i-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+      <symbol id="i-minus" viewBox="0 0 24 24"><path d="M7 12h10"/></symbol>
+    </defs>
+  </svg>
+
+  <a class="skip-link" href="#main">Skip to main content</a>
+
   <div class="shell">
     <aside class="sidebar">
-      <a class="brand" href="/" aria-label="OpsLedger home">
-        <span class="brand-mark">O<span>.</span></span>
-        <span>opsledger<small>PLATFORM CONSOLE</small></span>
+      <a class="brand" href="/">
+        <span class="brand-text">OpsLedger<small>Platform console</small></span>
       </a>
-      <div class="side-label">WORKSPACE</div>
+
       <nav class="navigation" aria-label="Main navigation">
-        <a class="nav-item active" href="#overview"><span class="nav-symbol">▦</span>Overview</a>
-        <a class="nav-item" href="#transactions"><span class="nav-symbol">↗</span>Transactions</a>
-        <a class="nav-item" href="#delivery"><span class="nav-symbol">⌘</span>Delivery</a>
+        <a class="nav-item" href="#overview" aria-current="location"><svg class="icon" aria-hidden="true"><use href="#i-overview"/></svg>Overview</a>
+        <a class="nav-item" href="#transactions"><svg class="icon" aria-hidden="true"><use href="#i-transactions"/></svg>Transactions</a>
+        <a class="nav-item" href="#delivery"><svg class="icon" aria-hidden="true"><use href="#i-delivery"/></svg>Delivery</a>
       </nav>
+
       <div class="sidebar-bottom">
-        <div class="cluster-chip"><span class="pulse-dot"></span><div><strong>APPLICATION</strong><small id="sidebar-environment">Checking environment</small></div></div>
-        <div class="side-foot">OPSLEDGER <span>•</span> <span id="sidebar-version">--</span></div>
+        <div class="env-chip">
+          <span class="status-dot" id="sidebar-dot" data-state="checking" aria-hidden="true"></span>
+          <div class="env-copy">
+            <span class="env-label">Environment</span>
+            <strong id="sidebar-environment">Checking…</strong>
+          </div>
+          <span class="env-version" id="sidebar-version">--</span>
+        </div>
       </div>
     </aside>
 
-    <main class="main" id="overview">
-      <header class="topbar">
-        <div class="breadcrumbs">Platform <span>/</span> Overview</div>
-        <div class="top-actions">
-          <span class="live-label"><span class="pulse-dot"></span> LIVE STATUS</span>
-          <button class="icon-button" id="refresh-button" type="button" title="Refresh status and transactions" aria-label="Refresh status and transactions">↻</button>
-          <span class="avatar" aria-label="Ops workspace">OP</span>
-        </div>
-      </header>
+    <main class="main" id="main" tabindex="-1">
+      <div class="page">
+        <noscript><p class="notice notice-bad">OpsLedger needs JavaScript to load live status and transactions.</p></noscript>
 
-      <section class="page-heading">
-        <div>
-          <p class="eyebrow">APPLICATION CONTROL PLANE</p>
-          <h1>Service overview</h1>
-          <p class="subheading">Runtime health, release context, and application activity.</p>
-        </div>
-        <div class="checked-at">LAST CHECK <strong id="last-checked">Waiting for API</strong></div>
-      </section>
+        <section id="overview" class="section" aria-labelledby="page-title">
+          <header class="page-head">
+            <div>
+              <h1 id="page-title">Service overview</h1>
+              <p class="subheading">Runtime health, release context, and application activity.</p>
+            </div>
+            <div class="page-actions">
+              <p class="updated"><span id="updated-label">Status check</span> <time id="last-checked">pending</time></p>
+              <button class="btn btn-secondary" id="refresh-button" type="button" title="Refresh now (updates automatically every 30 seconds)">
+                <svg class="icon" aria-hidden="true"><use href="#i-refresh"/></svg><span>Refresh</span>
+              </button>
+            </div>
+          </header>
 
-      <section class="service-banner" aria-live="polite">
-        <div class="banner-indicator" id="banner-indicator"><span></span></div>
-        <div class="banner-copy"><strong id="service-title">Connecting to application</strong><p id="service-message">Fetching live health and database status.</p></div>
-        <span class="banner-tag" id="service-tag">CHECKING</span>
-      </section>
-
-      <section class="metrics" aria-label="Application metrics">
-        <article class="metric"><div class="metric-top"><span>API SERVICE</span><span class="metric-icon icon-green">⌁</span></div><strong class="metric-value" id="api-metric">Checking</strong><small id="api-detail">Health endpoint</small></article>
-        <article class="metric"><div class="metric-top"><span>DATABASE</span><span class="metric-icon icon-yellow">◉</span></div><strong class="metric-value" id="database-metric">Checking</strong><small id="database-detail">Readiness probe</small></article>
-        <article class="metric"><div class="metric-top"><span>TRANSACTIONS</span><span class="metric-icon icon-blue">↗</span></div><strong class="metric-value" id="transaction-count">--</strong><small id="transaction-total">Loading records</small></article>
-        <article class="metric"><div class="metric-top"><span>PROCESS UPTIME</span><span class="metric-icon icon-red">◷</span></div><strong class="metric-value" id="uptime-metric">--</strong><small>Since process start</small></article>
-      </section>
-
-      <section class="content-grid">
-        <section class="panel transactions-panel" id="transactions">
-          <div class="section-heading">
-            <div><p class="eyebrow">APPLICATION DATA</p><h2>Recent transactions</h2></div>
-            <div class="table-actions"><button id="add-button" class="add-button" type="button"><span>+</span> Add record</button><button id="clear-button" class="text-button" type="button">Clear all</button></div>
+          <div class="status-banner" id="status-banner" data-state="checking" role="status" aria-live="polite">
+            <span class="banner-icon" aria-hidden="true"><svg class="icon"><use id="banner-icon-use" href="#i-clock"/></svg></span>
+            <div class="banner-copy">
+              <strong id="service-title">Connecting to application</strong>
+              <p id="service-message">Fetching live health and database status.</p>
+            </div>
+            <span class="pill" id="service-tag" data-state="checking">Checking</span>
           </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>DESCRIPTION</th><th>RECORD ID</th><th class="amount-column">AMOUNT</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
-              <tbody id="transaction-rows"><tr><td colspan="4" class="empty-state">Loading transactions…</td></tr></tbody>
-            </table>
-          </div>
-          <p class="table-foot" id="table-foot">Connected to the transaction API</p>
+
+          <ul class="metrics" aria-label="Application metrics">
+            <li class="metric">
+              <span class="metric-label"><svg class="icon" aria-hidden="true"><use href="#i-server"/></svg>API service</span>
+              <strong class="metric-value" id="api-metric">Checking</strong>
+              <span class="metric-detail" id="api-detail">Health endpoint</span>
+            </li>
+            <li class="metric">
+              <span class="metric-label"><svg class="icon" aria-hidden="true"><use href="#i-database"/></svg>Database</span>
+              <strong class="metric-value" id="database-metric">Checking</strong>
+              <span class="metric-detail" id="database-detail">Readiness probe</span>
+            </li>
+            <li class="metric">
+              <span class="metric-label"><svg class="icon" aria-hidden="true"><use href="#i-transactions"/></svg>Transactions</span>
+              <strong class="metric-value" id="transaction-count">--</strong>
+              <span class="metric-detail" id="transaction-total">Loading records</span>
+            </li>
+            <li class="metric">
+              <span class="metric-label"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg>Process uptime</span>
+              <strong class="metric-value" id="uptime-metric">--</strong>
+              <span class="metric-detail">Since process start</span>
+            </li>
+          </ul>
         </section>
 
-        <section class="panel release-panel" id="delivery">
-          <div class="section-heading"><div><p class="eyebrow">RELEASE CONTEXT</p><h2>Runtime details</h2></div><span class="release-mark">R</span></div>
-          <dl class="runtime-list">
-            <div><dt>Environment</dt><dd id="runtime-environment">--</dd></div>
-            <div><dt>Application version</dt><dd id="runtime-version">--</dd></div>
-            <div><dt>Release identifier</dt><dd class="code-value" id="runtime-release">--</dd></div>
-            <div><dt>Database connection</dt><dd><span class="state-dot" id="database-dot"></span><span id="runtime-database">Checking</span></dd></div>
-          </dl>
-          <div class="delivery-divider"></div>
-          <p class="eyebrow">DELIVERY PATH</p>
-          <div class="pipeline" aria-label="Application delivery path">
-            <div class="pipeline-step"><span class="step-node done">✓</span><span>Commit</span></div>
-            <span class="step-line"></span>
-            <div class="pipeline-step"><span class="step-node done">✓</span><span>Build</span></div>
-            <span class="step-line"></span>
-            <div class="pipeline-step"><span class="step-node current">●</span><span>Runtime</span></div>
-          </div>
-          <p class="pipeline-note">Runtime details are supplied by the running application. Configure <code>APP_VERSION</code> and <code>GIT_COMMIT</code> in your pipeline.</p>
-        </section>
-      </section>
+        <div class="content-grid">
+          <section class="panel transactions-panel section" id="transactions" aria-labelledby="transactions-title">
+            <div class="panel-head">
+              <h2 id="transactions-title">Recent transactions</h2>
+              <div class="panel-actions">
+                <button id="add-button" class="btn btn-primary" type="button"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>Add transaction</button>
+                <button id="clear-button" class="btn btn-danger-outline" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg>Clear all</button>
+              </div>
+            </div>
 
-      <footer class="page-footer"><span>OPSLEDGER <span class="footer-dot">/</span> PLATFORM OPERATIONS</span><span>API <code>/api/status</code> <span class="footer-dot">·</span> HEALTH <code>/health</code></span></footer>
+            <div class="notice notice-warn" id="transactions-notice" hidden>
+              <svg class="icon" aria-hidden="true"><use href="#i-alert"/></svg>
+              <p id="transactions-notice-text"></p>
+              <button class="link-button" id="notice-retry" type="button">Try again</button>
+            </div>
+
+            <div class="table-wrap" id="table-wrap">
+              <table aria-labelledby="transactions-title" aria-busy="true">
+                <colgroup><col class="col-desc"><col class="col-id"><col class="col-amount"><col class="col-action"></colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">Description</th>
+                    <th scope="col" class="cell-id">Record ID</th>
+                    <th scope="col" class="cell-amount">Amount</th>
+                    <th scope="col" class="cell-action"><span class="sr-only">Actions</span></th>
+                  </tr>
+                </thead>
+                <tbody id="transaction-rows">
+                  <tr class="skeleton-row" aria-hidden="true"><td><span class="sk" style="width:62%"></span></td><td class="cell-id"><span class="sk" style="width:36px"></span></td><td class="cell-amount"><span class="sk" style="width:72px"></span></td><td class="cell-action"></td></tr>
+                  <tr class="skeleton-row" aria-hidden="true"><td><span class="sk" style="width:48%"></span></td><td class="cell-id"><span class="sk" style="width:36px"></span></td><td class="cell-amount"><span class="sk" style="width:64px"></span></td><td class="cell-action"></td></tr>
+                  <tr class="skeleton-row" aria-hidden="true"><td><span class="sk" style="width:70%"></span></td><td class="cell-id"><span class="sk" style="width:36px"></span></td><td class="cell-amount"><span class="sk" style="width:80px"></span></td><td class="cell-action"></td></tr>
+                </tbody>
+                <tfoot id="transaction-foot" hidden>
+                  <tr>
+                    <th scope="row" id="foot-label">Total</th>
+                    <td class="cell-id"></td>
+                    <td class="cell-amount" id="foot-total">--</td>
+                    <td class="cell-action"></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <div class="table-state" id="table-state" hidden></div>
+          </section>
+
+          <section class="panel release-panel section" id="delivery" aria-labelledby="delivery-title">
+            <div class="panel-head"><h2 id="delivery-title">Runtime details</h2></div>
+
+            <dl class="runtime-list">
+              <div><dt>Environment</dt><dd id="runtime-environment">--</dd></div>
+              <div><dt>Application version</dt><dd id="runtime-version">--</dd></div>
+              <div>
+                <dt>Release identifier</dt>
+                <dd>
+                  <span class="code-value" id="runtime-release">--</span>
+                  <button class="icon-btn" id="copy-release" type="button" aria-label="Copy release identifier" title="Copy release identifier" hidden><svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg></button>
+                </dd>
+              </div>
+              <div><dt>Database connection</dt><dd><span class="status-dot" id="database-dot" data-state="checking" aria-hidden="true"></span><span id="runtime-database">Checking</span></dd></div>
+            </dl>
+
+            <h3 class="subsection-title">Delivery path</h3>
+            <ol class="path" aria-label="Application delivery path">
+              <li data-state="unknown" id="path-commit"><span class="path-node" aria-hidden="true"><svg class="icon"><use href="#i-minus"/></svg></span><div><strong>Commit</strong><span id="path-commit-value">Checking…</span></div></li>
+              <li data-state="unknown" id="path-build"><span class="path-node" aria-hidden="true"><svg class="icon"><use href="#i-minus"/></svg></span><div><strong>Build</strong><span id="path-build-value">Checking…</span></div></li>
+              <li data-state="unknown" id="path-runtime"><span class="path-node" aria-hidden="true"><svg class="icon"><use href="#i-minus"/></svg></span><div><strong>Runtime</strong><span id="path-runtime-value">Checking…</span></div></li>
+            </ol>
+            <p class="path-hint" id="path-hint" hidden>Set <code>GIT_COMMIT</code> and <code>APP_VERSION</code> in your pipeline to show release details here.</p>
+          </section>
+        </div>
+
+        <footer class="page-footer">
+          <span>OpsLedger platform operations</span>
+          <span>Endpoints: <a href="/api/status"><code>/api/status</code></a> and <a href="/health"><code>/health</code></a></span>
+        </footer>
+      </div>
     </main>
   </div>
 
-  <dialog id="confirm-dialog" class="confirm-dialog">
-    <form method="dialog" class="dialog-content">
-      <p class="eyebrow">DESTRUCTIVE ACTION</p>
-      <h2>Clear every transaction?</h2>
-      <p>This permanently deletes all transaction records from the database.</p>
-      <div class="dialog-actions"><button class="text-button" value="cancel">Cancel</button><button class="danger-button" id="confirm-clear" value="confirm">Clear records</button></div>
+  <!-- Confirm dialog: shared by "Delete transaction" and "Clear all" -->
+  <dialog id="confirm-dialog" class="dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+    <div class="dialog-body">
+      <h2 id="confirm-title">Delete transaction?</h2>
+      <p id="confirm-message"></p>
+      <p class="form-error" id="confirm-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button class="btn btn-secondary" id="confirm-cancel" type="button" autofocus>Cancel</button>
+        <button class="btn btn-danger" id="confirm-action" type="button">Delete</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="transaction-dialog" class="dialog" aria-labelledby="transaction-title">
+    <form id="transaction-form" class="dialog-body" novalidate>
+      <h2 id="transaction-title">Add transaction</h2>
+
+      <div class="field">
+        <label for="amount-input">Amount</label>
+        <div class="input-group">
+          <span aria-hidden="true">$</span>
+          <input id="amount-input" name="amount" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="0.00" required autocomplete="off" autofocus aria-describedby="amount-error">
+        </div>
+        <p class="field-error" id="amount-error" hidden></p>
+      </div>
+
+      <div class="field">
+        <label for="description-input">Description</label>
+        <input class="input" id="description-input" name="desc" type="text" maxlength="255" placeholder="What was this transaction for?" required autocomplete="off" aria-describedby="description-error">
+        <p class="field-error" id="description-error" hidden></p>
+      </div>
+
+      <p class="form-error" id="transaction-error" role="alert" hidden></p>
+
+      <div class="dialog-actions">
+        <button class="btn btn-secondary" id="cancel-transaction" type="button">Cancel</button>
+        <button class="btn btn-primary" id="save-transaction" type="submit">Save transaction</button>
+      </div>
     </form>
   </dialog>
-  <dialog id="transaction-dialog" class="confirm-dialog">
-    <form id="transaction-form" class="dialog-content">
-      <p class="eyebrow">APPLICATION DATA</p>
-      <h2 id="transaction-dialog-title">Add transaction</h2>
-      <label class="form-label" for="amount-input">Amount</label>
-      <div class="amount-input-wrap"><span>$</span><input id="amount-input" name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required></div>
-      <label class="form-label" for="description-input">Description</label>
-      <input class="description-input" id="description-input" name="desc" type="text" maxlength="255" placeholder="What was this transaction for?" required>
-      <div class="dialog-actions"><button class="text-button" id="cancel-transaction" type="button">Cancel</button><button class="submit-button" id="save-transaction" type="submit">Save transaction</button></div>
-    </form>
-  </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
